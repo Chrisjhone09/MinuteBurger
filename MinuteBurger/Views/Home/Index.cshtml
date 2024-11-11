@@ -1,0 +1,41 @@
+﻿@model List<Product>
+@{
+	ViewData["Title"] = "Home Page";
+}
+<style>
+		
+
+	.card-container {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		gap: 20px;
+		padding: 20px;
+	}
+
+	.card {
+		width: 20rem;
+		height: 15rem;
+	}
+	.anchor-card{
+		text-decoration:none;
+	}
+</style>
+<a asp-action="ShoppingCart">Cart</a>
+<div class="card-container">
+	@foreach (var obj in Model)
+	{
+		<a class="anchor-card" asp-route-id="@obj.ProductId" asp-action="Item">
+			<form>
+				<div class="card border-primary mb-3">
+					<div class="card-header">@obj.Category</div>
+					<div class="card-body">
+						<h4 class="card-title">@obj.Name</h4>
+						<p class="card-text">@obj.Description</p>
+					</div>
+				</div>
+			</form>
+		</a>
+	}
+</div>

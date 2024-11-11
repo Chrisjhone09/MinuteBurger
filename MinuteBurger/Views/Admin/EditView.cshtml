@@ -1,0 +1,85 @@
+﻿@model MinuteBurger.Models.Product
+<style>
+	body {
+		background-image: url('/images/burger.jpeg'); 
+		background-size: cover; 
+		background-position: center;
+		background-repeat: no-repeat; 
+		height: 100vh; 
+		margin: 0; 
+	}
+
+	.form-container {
+		max-width: 400px;
+		margin-left: 0; 
+		padding: 20px; 
+		border: 1px solid #ccc; 
+		border-radius: 5px; 
+		background-color: #f9ddb1; 
+	}
+
+	.mb-3 {
+		margin-bottom: 15px; 
+	}
+
+	.form-control {
+		width: 100%; 
+	}
+</style>
+
+<body>
+	<div class="form-container">
+		<h2 class="text-center">Details</h2>
+		<form method="post" asp-action="Edit">
+			<div class="mb-3">
+				<label asp-for="Name" class="form-label"></label>
+				<input asp-for="Name" class="form-control" required />
+				<span asp-validation-for="Name" class="text-danger"></span>
+			</div>
+
+			<div class="mb-3">
+				<label asp-for="Description" class="form-label"></label>
+				<textarea asp-for="Description" class="form-control" required></textarea>
+				<span asp-validation-for="Description" class="text-danger"></span>
+			</div>
+			<div class="mb-3">
+				<label asp-for="Category" class="form-label"></label>
+				<select asp-for="Category">
+					<option>BigTime</option>
+					<option>Beverages</option>
+					<option>Burgers</option>
+				</select>
+				<span asp-validation-for="Category" class="text-danger"></span>
+			</div>
+
+			<div class="mb-3">
+				<label asp-for="Price" class="form-label"></label>
+				<input asp-for="Price" class="form-control" required />
+				<span asp-validation-for="Price" class="text-danger"></span>
+			</div>
+
+			<div class="mb-3">
+				<label asp-for="StockQuantity" class="form-label"></label>
+				<input asp-for="StockQuantity" class="form-control" required />
+				<span asp-validation-for="StockQuantity" class="text-danger"></span>
+			</div>
+
+			<div class="mb-3">
+				<label asp-for="ImageUrl" class="form-label"></label>
+				<input type="file" id="Image" name="Image" accept="image/*" />
+				<span asp-validation-for="ImageUrl" class="text-danger"></span>
+			</div>
+			<button type="submit" class="btn btn-primary">Save</button>
+			<form asp-action="Delete" method="post">
+				<button type="submit">Delete</button>
+			</form>
+		</form>
+	</div>
+
+</body>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}

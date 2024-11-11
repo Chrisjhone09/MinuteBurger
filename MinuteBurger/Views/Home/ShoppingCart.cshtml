@@ -1,0 +1,24 @@
+﻿@model List<OrderItem>
+
+<div class="container">
+	<table>
+		<thead>
+			<tr>
+				<th>Product Name</th>
+				<th>Quantity</th>
+				<th>Total Amount</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach(var obj in Model)
+			{
+				<tr>
+					<td>@obj.Product.Name</td>
+					<td>@obj.Quantity</td>
+					<td rowspan="3">@obj.TotalAmount</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+
+</div>

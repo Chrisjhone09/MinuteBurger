@@ -1,0 +1,40 @@
+﻿@model MinuteBurger.Models.OrderItem
+<style>
+	.container {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		gap: 20px;
+		padding: 20px;
+	}
+
+	.card-text {
+		font-size: large;
+	}
+</style>
+
+<div class="container">
+	<form method="post" asp-action="OrderItem">
+		<div class="card border-primary mb-3">
+			<div class="card-header">Test</div>
+			<div class="card-body">
+				<h1 class="card-title">@Model.Product.Name</h1>
+				<h4>₱@Model.Product.Price</h4>
+				<p class="card-text">@Model.Product.Description</p>
+			</div>
+
+			<!-- Hidden fields for necessary Product information -->
+			<input type="hidden" asp-for="Product.ProductId" value="@Model.Product.ProductId"/>
+			<input type="hidden" asp-for="Product.Price" value="@Model.Product.Price" />
+			<input type="hidden" asp-for="Product.Description" value="@Model.Product.Description" />
+			<input type="hidden" asp-for="Product.ImageUrl" value="@Model.Product.ImageUrl" />
+
+			<input asp-for="VoucherInput" type="text"/>
+
+			<label>Quantity:</label>
+			<input asp-for="Quantity" type="number" />
+			<button type="submit">Ok</button>
+		</div>
+	</form>
+</div>

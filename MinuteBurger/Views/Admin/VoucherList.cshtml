@@ -1,0 +1,38 @@
+﻿@model List<Vouchers>
+@{
+
+}
+<div class="container mt-4">
+	<h2>Product List</h2>
+	<a class="btn btn-primary" asp-action="AddVoucher">Add a Voucher</a>
+	<table class="table table-striped table-bordered">
+		<thead class="table-dark">
+			<tr>
+				<th>Voucher Id</th>
+				<th>Discount</th>
+				<th>Expiration Date</th>
+				<th>Valid until</th>
+				<th>Limited to</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var obj in Model)
+			{
+				<tr>
+					<td>@obj.VoucherId</td>
+					<td>@obj.DiscountPercentage%</td>
+					<td>@obj.ExpirationDate.ToString("MMM/dd/yyyy t")</td>
+					<td>@obj.ValidUntil.ToString("MMM/dd/yyyy t")</td>
+					<td>Null</td>
+					<td>
+						<form method="post" asp-action="DeleteVoucher">
+							<input value="@obj.VoucherId" />
+							<button class="btn btn-primary" type="submit">Delete</button>
+						</form>
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+</div>

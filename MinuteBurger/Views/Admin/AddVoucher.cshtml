@@ -1,0 +1,28 @@
+﻿@model MinuteBurger.Models.Vouchers
+
+<div class="form-container">
+    <h2 class="text-center">Add Voucher</h2>
+    <form method="post" asp-action="AddVoucher" >
+        <div class="mb-3">
+            <label asp-for="DiscountPercentage" class="form-label">Discount</label>
+            <input asp-for="DiscountPercentage" class="form-control" required>
+            <span asp-validation-for="DiscountPercentage" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ExpirationDate" class="form-label">Expiration Date</label>
+            <input asp-for="ExpirationDate" class="form-control" required>
+            <span asp-validation-for="ExpirationDate" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ValidUntil" class="form-label">Valid until</label>
+            <input asp-for="ValidUntil" class="form-control" required />
+            <span asp-validation-for="ValidUntil" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+
+    <div class="mt-3">
+        <a asp-action="VoucherList" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
