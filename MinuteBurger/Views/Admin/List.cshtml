@@ -27,7 +27,7 @@
                     <td>@obj.Description</td>
                     <td>@string.Format("{0:C}", obj.Price)</td>
                     <td>@obj.StockQuantity</td>
-                    <td><img src="@ViewBag.ImageUrl" alt="Uploaded Image" style="max-width: 300px;" /></td>
+                    <td><img src="@obj.ImageUrl" alt="Uploaded Image" style="max-width: 300px;" /></td>
                     <td>
                         <a class="btn btn-primary" asp-action="EditView" asp-route-id="@obj.ProductId">View Details</a>
                     </td>

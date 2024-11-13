@@ -11,13 +11,15 @@ namespace MinuteBurger.Controllers
 	public class HomeController : Controller
 	{
 		private readonly OrderingSystemDbContext _context;
+		private readonly IWebHostEnvironment _webHostEnvironment;
 
 		private readonly ILogger<HomeController> _logger;
 
-		public HomeController(ILogger<HomeController> logger, OrderingSystemDbContext context)
+		public HomeController(ILogger<HomeController> logger, OrderingSystemDbContext context, IWebHostEnvironment webHostEnvironment)
 		{
 			_logger = logger;
 			_context = context;
+			_webHostEnvironment = webHostEnvironment;
 		}
 		[HttpGet]
 		public IActionResult Index()
@@ -48,25 +50,21 @@ namespace MinuteBurger.Controllers
 		[HttpPost]
 		public IActionResult OrderItem(OrderItem model)
 		{
-			// Find the selected product
 			var selectedProduct = _context.Product.Find(model.Product.ProductId);
 			if (selectedProduct == null)
 			{
 				return NotFound("Product not found.");
 			}
 
-			// Initialize order item variables
 			double totalAmount = model.Quantity * selectedProduct.Price;
 			var voucher = _context.Voucher.FirstOrDefault(v => v.VoucherId == model.VoucherInput);
 
-			// Apply discount if voucher is valid
 			if (voucher != null)
 			{
 				double discount = (double)(voucher.DiscountPercentage / 100m) * totalAmount;
 				totalAmount -= discount;
 			}
 
-			// Create OrderItem entity
 			OrderItem orderItem = new OrderItem
 			{
 				OrderedAt = DateTime.Now,
@@ -76,14 +74,12 @@ namespace MinuteBurger.Controllers
 				ProductId = selectedProduct.ProductId
 			};
 
-			// Create an Order to hold the OrderItem
 			var order = new Order
 			{
 				OrderItems = new List<OrderItem> { orderItem },
 				TotalAmountToPay = orderItem.TotalAmount
 			};
 
-			// Add and save entities
 			_context.Order.Add(order);
 			_context.OrderItem.Add(orderItem);
 			_context.SaveChanges();
@@ -94,18 +90,17 @@ namespace MinuteBurger.Controllers
 		[HttpGet("Item/{id:int}/PlaceOrder")]
 		public IActionResult PlaceOrder(int id)
 		{
-			// Find the order item by id
 			var orderItem = _context.OrderItem.Find(id);
 			if (orderItem == null)
 			{
 				return NotFound("Order item not found.");
 			}
 
-			// Create an order view model to display in the view
 			var order = new Order
 			{
 				TotalAmountToPay = orderItem.TotalAmount,
-				OrderItems = new List<OrderItem> { orderItem }
+				OrderItems = new List<OrderItem> { orderItem },
+				OrderStatus = OrderStatus.Preparing
 			};
 
 			return View(order);

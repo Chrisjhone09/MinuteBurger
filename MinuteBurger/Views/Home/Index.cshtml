@@ -16,7 +16,7 @@
 
 	.card {
 		width: 20rem;
-		height: 15rem;
+		height: 22rem;
 	}
 	.anchor-card{
 		text-decoration:none;
@@ -31,8 +31,9 @@
 				<div class="card border-primary mb-3">
 					<div class="card-header">@obj.Category</div>
 					<div class="card-body">
+						<img src="@obj.ImageUrl" alt="Uploaded Image" style="max-width: 300px;" />
 						<h4 class="card-title">@obj.Name</h4>
-						<p class="card-text">@obj.Description</p>
+						<p>₱@obj.Price</p>
 					</div>
 				</div>
 			</form>

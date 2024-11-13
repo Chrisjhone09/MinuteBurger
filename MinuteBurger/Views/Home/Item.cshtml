@@ -9,7 +9,10 @@
         gap: 20px;
         padding: 20px;
     }
-
+    .card{
+        width: 40rem;
+        height: auto;
+    }
     .card-text {
         font-size: large;
     }
@@ -20,6 +23,7 @@
         <div class="card border-primary mb-3">
             <div class="card-header">Product Order</div>
             <div class="card-body">
+                <img src="@Model.Product.ImageUrl" alt="Uploaded Image" style="max-width: 800px;" />
                 <h1 class="card-title">@Model.Product.Name</h1>
                 <h4>₱@Model.Product.Price</h4>
                 <p class="card-text">@Model.Product.Description</p>

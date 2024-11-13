@@ -9,7 +9,7 @@ namespace MinuteBurger.Models
 		public int OrderId { get; set; }
 		public OrderStatus OrderStatus { get; set; }
 		public double TotalAmountToPay { get; set; }
-		public ICollection<OrderItem> OrderItems { get; set; } = [];
+		public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
 	}
 	public enum OrderStatus
 	{
