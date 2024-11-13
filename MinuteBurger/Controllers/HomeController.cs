@@ -48,52 +48,67 @@ namespace MinuteBurger.Controllers
 		[HttpPost]
 		public IActionResult OrderItem(OrderItem model)
 		{
+			// Find the selected product
 			var selectedProduct = _context.Product.Find(model.Product.ProductId);
 			if (selectedProduct == null)
 			{
 				return NotFound("Product not found.");
 			}
 
-			string id = model.VoucherInput;
-			bool findExistingVoucher = _context.Voucher.Any(v=> v.VoucherId == model.VoucherInput) ? true : false;
-			var getVoucher = _context.Voucher.FirstOrDefault(v=> v.VoucherId == model.VoucherInput);
-			if(findExistingVoucher)
-			{
-				double discount = (double)getVoucher.DiscountPercentage * (model.Quantity * selectedProduct.Price);
-				OrderItem entity = new OrderItem
-				{
-					OrderedAt = DateTime.Now,
-					TotalAmount = model.Quantity * selectedProduct.Price - discount,
-					Product = selectedProduct,
-					Quantity = model.Quantity,
-					ProductId = selectedProduct.ProductId
-				};
-				var order = new Order
-				{
-					OrderItems = {entity}
+			// Initialize order item variables
+			double totalAmount = model.Quantity * selectedProduct.Price;
+			var voucher = _context.Voucher.FirstOrDefault(v => v.VoucherId == model.VoucherInput);
 
-				};
-				_context.Order.Add(order);
-				_context.OrderItem.Add(entity);
-			} else
+			// Apply discount if voucher is valid
+			if (voucher != null)
 			{
-				OrderItem entity = new OrderItem
-				{
-					OrderedAt = DateTime.Now,
-					TotalAmount = model.Quantity * selectedProduct.Price,
-					Product = selectedProduct,
-					Quantity = model.Quantity,
-					ProductId = selectedProduct.ProductId
-				};
-				
-				_context.OrderItem.Add(entity);
+				double discount = (double)(voucher.DiscountPercentage / 100m) * totalAmount;
+				totalAmount -= discount;
 			}
-			return RedirectToAction("PlaceOrder", entity);
+
+			// Create OrderItem entity
+			OrderItem orderItem = new OrderItem
+			{
+				OrderedAt = DateTime.Now,
+				TotalAmount = totalAmount,
+				Product = selectedProduct,
+				Quantity = model.Quantity,
+				ProductId = selectedProduct.ProductId
+			};
+
+			// Create an Order to hold the OrderItem
+			var order = new Order
+			{
+				OrderItems = new List<OrderItem> { orderItem },
+				TotalAmountToPay = orderItem.TotalAmount
+			};
+
+			// Add and save entities
+			_context.Order.Add(order);
+			_context.OrderItem.Add(orderItem);
+			_context.SaveChanges();
+
+			return RedirectToAction("PlaceOrder", new { id = orderItem.OrderItemId });
 		}
-		[HttpGet]
+
+		[HttpGet("Item/{id:int}/PlaceOrder")]
 		public IActionResult PlaceOrder(int id)
 		{
-			var orderItem = _context.OrderItem.
+			// Find the order item by id
+			var orderItem = _context.OrderItem.Find(id);
+			if (orderItem == null)
+			{
+				return NotFound("Order item not found.");
+			}
+
+			// Create an order view model to display in the view
+			var order = new Order
+			{
+				TotalAmountToPay = orderItem.TotalAmount,
+				OrderItems = new List<OrderItem> { orderItem }
+			};
+
+			return View(order);
 		}
 		[HttpGet]
 		public IActionResult ShoppingCart()
@@ -109,6 +124,5 @@ namespace MinuteBurger.Controllers
 			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 		}
 	}
-	//is my naming convention bad?
 
 }

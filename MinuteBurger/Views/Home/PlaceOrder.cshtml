@@ -1,0 +1,19 @@
+﻿@model MinuteBurger.Models.Order
+
+
+<p>Place Order</p>
+<table>
+		@foreach (var item in Model.OrderItems)
+		{
+			<tr>
+				<td>
+					<img src="@item.Product.ImageUrl" alt="Product Image" width="100" height="100" />
+				</td>
+				<td>
+					<p>@item.Product.Name</p>
+					<p>@item.Product.Description</p>
+					<p>₱@item.Product.Price</p>
+				</td>
+			</tr>
+		}
+</table>

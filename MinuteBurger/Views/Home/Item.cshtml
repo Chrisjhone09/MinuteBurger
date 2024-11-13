@@ -1,40 +1,50 @@
 ﻿@model MinuteBurger.Models.OrderItem
-<style>
-	.container {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		align-items: center;
-		gap: 20px;
-		padding: 20px;
-	}
 
-	.card-text {
-		font-size: large;
-	}
+<style>
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .card-text {
+        font-size: large;
+    }
 </style>
 
 <div class="container">
-	<form method="post" asp-action="OrderItem">
-		<div class="card border-primary mb-3">
-			<div class="card-header">Test</div>
-			<div class="card-body">
-				<h1 class="card-title">@Model.Product.Name</h1>
-				<h4>₱@Model.Product.Price</h4>
-				<p class="card-text">@Model.Product.Description</p>
-			</div>
+    <form method="post" asp-action="OrderItem">
+        <div class="card border-primary mb-3">
+            <div class="card-header">Product Order</div>
+            <div class="card-body">
+                <h1 class="card-title">@Model.Product.Name</h1>
+                <h4>₱@Model.Product.Price</h4>
+                <p class="card-text">@Model.Product.Description</p>
+            </div>
 
-			<!-- Hidden fields for necessary Product information -->
-			<input type="hidden" asp-for="Product.ProductId" value="@Model.Product.ProductId"/>
-			<input type="hidden" asp-for="Product.Price" value="@Model.Product.Price" />
-			<input type="hidden" asp-for="Product.Description" value="@Model.Product.Description" />
-			<input type="hidden" asp-for="Product.ImageUrl" value="@Model.Product.ImageUrl" />
+            <!-- Hidden fields for necessary Product information -->
+            <input type="hidden" asp-for="Product.ProductId" />
+            <input type="hidden" asp-for="Product.Price" />
+            <input type="hidden" asp-for="Product.Description" />
+            <input type="hidden" asp-for="Product.ImageUrl" />
 
-			<input asp-for="VoucherInput" type="text"/>
+            <!-- Voucher Input -->
+            <div class="form-group">
+                <label for="VoucherInput">Voucher Code:</label>
+                <input asp-for="VoucherInput" type="text" class="form-control" placeholder="Enter voucher code (if any)" />
+            </div>
 
-			<label>Quantity:</label>
-			<input asp-for="Quantity" type="number" />
-			<button type="submit">Ok</button>
-		</div>
-	</form>
+            <!-- Quantity Input -->
+            <div class="form-group">
+                <label for="Quantity">Quantity:</label>
+                <input asp-for="Quantity" type="number" class="form-control" min="1" value="1" />
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">Place Order</button>
+        </div>
+    </form>
 </div>
