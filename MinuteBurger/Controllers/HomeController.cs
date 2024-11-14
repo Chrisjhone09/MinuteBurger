@@ -49,9 +49,21 @@ namespace MinuteBurger.Controllers
 			return View(entity);
 		}
 		[HttpGet]
-		public IActionResult BigTimeFilter()
+		public IActionResult BigTime()
 		{
 			var item = _context.Product.Where(p=> p.Category == "BigTime").ToList();
+			return View(item);
+		}
+		[HttpGet]
+		public IActionResult Beverages()
+		{
+			var item = _context.Product.Where(p => p.Category == "Beverages").ToList();
+			return View(item);
+		}
+		[HttpGet]
+		public IActionResult Burgers()
+		{
+			var item = _context.Product.Where(p => p.Category == "Burgers").ToList();
 			return View(item);
 		}
 		[HttpPost]
