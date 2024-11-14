@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using MinuteBurger.Data;
 using MinuteBurger.Models;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 
@@ -46,6 +47,12 @@ namespace MinuteBurger.Controllers
 			};
 
 			return View(entity);
+		}
+		[HttpGet]
+		public IActionResult BigTimeFilter()
+		{
+			var item = _context.Product.Where(p=> p.Category == "BigTime").ToList();
+			return View(item);
 		}
 		[HttpPost]
 		public IActionResult OrderItem(OrderItem model)

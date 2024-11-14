@@ -7,11 +7,11 @@
 	<a class="btn btn-primary" asp-action="AddProduct">Add Product</a>
 	<a class="btn btn-secondary" asp-action="VoucherList">Vouchers</a>
 
+
 	<form method="get" asp-action="Sort">
 		<input asp-for="SearchString" />
 		<button type="submit">Search</button>
 	</form>
-
 	<table class="table table-striped table-bordered">
 		<thead class="table-dark">
 			<tr>
@@ -24,21 +24,18 @@
 				<th>Actions</th>
 			</tr>
 		</thead>
-		<tbody>
-			@foreach (var obj in Model.Products)
-			{
-				<tr>
-					<td>@obj.ProductId</td>
-					<td>@obj.Name</td>
-					<td>@obj.Description</td>
-					<td>@string.Format("{0:C}", obj.Price)</td>
-					<td>@obj.StockQuantity</td>
-					<td><img src="@obj.ImageUrl" alt="Uploaded Image" style="max-width: 300px;" /></td>
-					<td>
-						<a class="btn btn-primary" asp-action="EditView" asp-route-id="@obj.ProductId">View Details</a>
-					</td>
-				</tr>
-			}
-		</tbody>
+        <tbody>
+            <tr>
+                <td>@Model.Product.ProductId</td>
+                <td>@Model.Product.Name</td>
+                <td>@Model.Product.Description</td>
+                <td>@string.Format("{0:C}", Model.Product.Price)</td>
+                <td>@Model.Product.StockQuantity</td>
+                <td><img src="@Model.Product.ImageUrl" alt="Uploaded Image" style="max-width: 300px;" /></td>
+                <td>
+                    <a class="btn btn-primary" asp-action="EditView" asp-route-id="@Model.Product.ProductId">View Details</a>
+                </td>
+            </tr>
+        </tbody>
 	</table>
 </div>

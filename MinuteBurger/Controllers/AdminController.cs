@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using MinuteBurger.Data;
 using MinuteBurger.Models;
 using System.Runtime.CompilerServices;
@@ -20,12 +21,21 @@ namespace MinuteBurger.Controllers
             _context = context;
             _webHostEnvironment = environment;
         }
-
+        [HttpGet]
+        public IActionResult Sort(string searchString)
+        {
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                var sortedProduct = _context.Product.FirstOrDefault(s => s.Name == searchString);
+                return View(new SortAndList { Product = sortedProduct});
+            } 
+            return BadRequest("No string found");
+        }
         [HttpGet]
         public async Task<IActionResult> List()
         {
             var model = await _context.Product.ToListAsync();
-            return View(model);
+            return View(new SortAndList { Products = model});
         }
 
         [HttpPost]
@@ -68,49 +78,63 @@ namespace MinuteBurger.Controllers
         }
 
         [HttpGet]
-        public IActionResult EditView(int? id)
-        {
-            var entity = _context.Product.FirstOrDefault(p => p.ProductId == id);
+		public IActionResult EditView(int? id)
+		{
+			if (id == null)
+			{
+				return BadRequest("Product ID is required");
+			}
 
-            var productViewModel = new ProductViewModel
-            {
-                Product = entity
-            };
-            return View(productViewModel);
-        }
+			var entity = _context.Product.FirstOrDefault(p => p.ProductId == id);
 
-        [HttpPost]
-        public async Task<IActionResult> Edit(ProductViewModel model)
-        {
-            if (model.Image != null)
-            {
-                string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-                string uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+			if (entity == null)
+			{
+				return NotFound("Product not found");
+			}
 
-                Directory.CreateDirectory(uploadsFolder);
+			var productViewModel = new ProductViewModel
+			{
+				Product = entity
+			};
+			return View(productViewModel);
+		}
 
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await model.Image.CopyToAsync(fileStream);
-                }
+        [HttpPost("EditView")]
+		public async Task<IActionResult> Edit(ProductViewModel model)
+		{
+			if (model.Image != null)
+			{
+				string uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
+				string uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Image.FileName;
+				string filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
-                model.Product.ImageUrl = "/uploads/" + uniqueFileName;
-            }
+				Directory.CreateDirectory(uploadsFolder);
 
-            var entity = _context.Product.Find(model.Product.ProductId);
+				using (var fileStream = new FileStream(filePath, FileMode.Create))
+				{
+					await model.Image.CopyToAsync(fileStream);
+				}
 
-            entity.Name = model.Product.Name;
-            entity.Description = model.Product.Description;
-            entity.Price = model.Product.Price;
-            entity.StockQuantity = model.Product.StockQuantity;
-            entity.ImageUrl = model.Product.ImageUrl;
-            entity.Category = model.Product.Category;
+				model.Product.ImageUrl = "/uploads/" + uniqueFileName;
+			}
 
-            _context.Product.Update(entity);
-            _context.SaveChanges();
-            return RedirectToAction("List");
-        }
+			var entity = await _context.Product.FindAsync(model.Product.ProductId);
+			if (entity == null)
+			{
+				return NotFound("Product not found");
+			}
+
+			entity.Name = model.Product.Name;
+			entity.Description = model.Product.Description;
+			entity.Price = model.Product.Price;
+			entity.StockQuantity = model.Product.StockQuantity;
+			entity.ImageUrl = model.Product.ImageUrl;
+			entity.Category = model.Product.Category;
+
+			_context.Product.Update(entity);
+			await _context.SaveChangesAsync();
+			return RedirectToAction("List");
+		}
 
         [HttpPost, ActionName("EditPost")]
         public IActionResult Delete(int? id)
