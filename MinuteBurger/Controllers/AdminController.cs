@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using MinuteBurger.Data;
+using MinuteBurger.Entities;
 using MinuteBurger.Models;
 using System.Runtime.CompilerServices;
 
@@ -78,7 +79,7 @@ namespace MinuteBurger.Controllers
         }
 
         [HttpGet]
-		public IActionResult EditView(int? id)
+		public IActionResult Edit(int? id)
 		{
 			if (id == null)
 			{
@@ -99,7 +100,7 @@ namespace MinuteBurger.Controllers
 			return View(productViewModel);
 		}
 
-        [HttpPost("EditView")]
+        [HttpPost]
 		public async Task<IActionResult> Edit(ProductViewModel model)
 		{
 			if (model.Image != null)
@@ -123,7 +124,7 @@ namespace MinuteBurger.Controllers
 			{
 				return NotFound("Product not found");
 			}
-
+            
 			entity.Name = model.Product.Name;
 			entity.Description = model.Product.Description;
 			entity.Price = model.Product.Price;
@@ -136,11 +137,20 @@ namespace MinuteBurger.Controllers
 			return RedirectToAction("List");
 		}
 
-        [HttpPost, ActionName("EditPost")]
+
+        [HttpGet]
         public IActionResult Delete(int? id)
         {
             var entity = _context.Product.Find(id);
-            _context.Product.Remove(entity);
+            
+            return View(entity);
+        }
+        [HttpPost]
+        public IActionResult Delete(Product model)
+        {
+            var find = _context.Product.Find(model.ProductId);
+
+            _context.Product.Remove(find);
             _context.SaveChanges();
             return RedirectToAction("List");
         }

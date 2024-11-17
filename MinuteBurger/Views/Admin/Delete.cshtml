@@ -1,0 +1,86 @@
+﻿@model MinuteBurger.Models.Product
+<style>
+    .form-container {
+        max-width: 400px; /* Set a max width for the form container */
+        padding: 20px; /* Add some padding */
+        border: 1px solid #ccc; /* Optional: Add a border for better visibility */
+        border-radius: 5px; /* Optional: Rounded corners */
+        background-color: #f9ddb1; /* Optional: Light background color */
+        margin: 50px auto; /* Center horizontally and add margin from top */
+    }
+
+    .form-control {
+        width: 100%; /* Ensure inputs take full width */
+    }
+
+    .categoryAndPrice {
+        display: flex;
+        justify-content: space-between;
+    }
+
+        .categoryAndPrice .mb-3, .categoryAndPrice .mb-1 {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .categoryAndPrice .mb-1 {
+            margin-right: 0;
+        }
+</style>
+
+<div class="container">
+    <div class="form-container">
+        <h2 class="text-center">Delete Product</h2>
+        <form method="post" asp-action="Delete" enctype="multipart/form-data">
+            <div class="mb-3">
+                <p>@Model.ProductId</p>
+                <label asp-for="ProductId" class="form-label">Product ID: </label>
+                <p>@Model.Name</p>
+                <input asp-for="ProductId" type="hidden" readonly class="form-control" required />
+            </div>
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <p>@Model.Name</p>
+                <input asp-for="Name" type="hidden" readonly class="form-control" required />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <p>@Model.Description</p>
+                <textarea asp-for="Description" type="hidden" readonly class="form-control" required></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="categoryAndPrice">
+                <div class="mb-3">
+                    <label asp-for="Category" class="form-label"></label>
+                    <p>@Model.Category</p>
+                    <select asp-for="Category" type="hidden"  readonly class="form-control">
+                        <option>BigTime</option>
+                        <option>Beverages</option>
+                        <option>Burgers</option>
+                    </select>
+                    <span asp-validation-for="Category" class="text-danger"></span>
+                </div>
+                <div class="mb-1">
+                    <label asp-for="Price" class="form-label"></label>
+                    <p>@Model.Price</p>
+                    <input asp-for="Price" type="hidden" readonly class="form-control" required />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label asp-for="StockQuantity" class="form-label"></label>
+                <input asp-for="StockQuantity" readonly class="form-control" required />
+                <span asp-validation-for="StockQuantity" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

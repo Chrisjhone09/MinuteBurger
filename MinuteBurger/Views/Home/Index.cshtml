@@ -1,4 +1,5 @@
-﻿<style>
+﻿@model MinuteBurger.Entities.ProductOrderList
+<style>
 	.filters {
 		display: flex;
 		justify-content: center;
@@ -18,51 +19,155 @@
 
 	.card-container {
 		display: flex;
-		flex-wrap: wrap;
-		align-items: center;
-		align-content: space-around;
-		padding: 5px;
-		justify-content: space-evenly;
 		flex-direction: row;
+		justify-content: center;
+		gap: 15px;
+		flex-wrap: wrap;
 	}
 
 	.card {
-		width: 15rem;
+		width: 16rem;
 		height: 18rem;
+		display: flex;
 	}
 
 	.anchor-card {
 		text-decoration: none;
 	}
-</style>
-<div class="filters">
-	<form asp-action="Index" method="get">
-		<button class="button btn-dark" type="submit">All</button>
-	</form>
-	<form asp-action="BigTime" method="get">
-		<button class="button btn-dark" type="submit">BigTime</button>
-	</form>
-	<form asp-action="Burgers" method="get">
-		<button class="button btn-dark" type="submit">Burgers</button>
-	</form>
-	<form asp-action="Beverages" method="get">
-		<button class="button btn-dark" type="submit">Beverages</button>
-	</form>
-</div>
-<div class="card-container">
-	@foreach (var obj in Model)
-	{
-		<a class="anchor-card" asp-route-id="@obj.ProductId" asp-action="Item">
-			<form>
-				<div class="card border-primary mb-3">
-					<div class="card-header">@obj.Category</div>
-					<div class="card-body">
-						<img src="@obj.ImageUrl" alt="Uploaded Image" style="max-width: 200px;" />
-						<h4 class="card-title">@obj.Name</h4>
-						<p>₱@obj.Price</p>
-					</div>
-				</div>
-			</form>
-		</a>
+
+	.container {
+		display: flex;
+		justify-content: center;
+		gap: 20px;
 	}
+
+	.child-container {
+		display: inline-block;
+	}
+
+	#listOrders {
+		position: relative;
+		right: 0px;
+		width: 700px;
+		border: solid;
+		top: 23px;
+		padding: 10px;
+		border-radius: 20px;
+	}
+
+	.order-item {
+		border: solid;
+		margin: 10px;
+		display: block;
+		height: 120px;
+	}
+
+	#orderTitle {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.card-body {
+		display: flex;
+		align-items: center;
+	}
+
+	.imgOD {
+		display: inline-block;
+		height: 100px;
+	}
+
+	#image {
+		display: flex;
+		justify-content: center;
+	}
+
+	#details {
+		display: block;
+	}
+
+	#totalAmount {
+		position: relative;
+		right: 0;
+		text-align: right;
+		font-size: large;
+	}
+	.button-container {
+		display: flex;
+		justify-content: center;
+		gap: 20px;
+	}
+</style>
+<div class=container>
+	<div class="child-container" id="buttonsProducts">
+		<div class="filters">
+			<form asp-action="Index" method="get">
+				<button class="button btn-dark" type="submit">All</button>
+			</form>
+			<form asp-action="BigTime" method="get">
+				<button class="button btn-dark" type="submit">BigTime</button>
+			</form>
+			<form asp-action="Burgers" method="get">
+				<button class="button btn-dark" type="submit">Burgers</button>
+			</form>
+			<form asp-action="Beverages" method="get">
+				<button class="button btn-dark" type="submit">Beverages</button>
+			</form>
+		</div>
+
+		<div class="card-container">
+			@foreach (var obj in Model.Products)
+			{
+				<a class="anchor-card" asp-route-id="@obj.ProductId" asp-action="Item">
+					<form>
+						<div class="card border-primary mb-3">
+							<div class="card-header">@obj.Category</div>
+							<div class="card-body" id="details">
+								<div id="image">
+									<img src="@obj.ImageUrl" alt="Uploaded Image" style="max-width: 150px;" />
+								</div>
+								<div>
+									<h4 class="card-title"><b>@obj.Name</b></h4>
+									<p>₱@obj.Price</p>
+								</div>
+							</div>
+						</div>
+					</form>
+				</a>
+			}
+		</div>
+
+	</div>
+	<div class="child-container border-primary" id="listOrders">
+		<div id="listContainer">
+			<div id="orderTitle">
+				<h1>My Orders</h1>
+			</div>
+			<hr />
+			<div id="itemContainer">
+				<div id="totalAmount">
+					<p id="totalAmount"> <b>Total Amount:</b> ₱@Model.Orders.Sum(o => o.TotalAmount)</p>
+				</div>
+				<form asp-action="Index" method="post">
+					@foreach (var orders in Model.Orders)
+					{
+						<div class="order-item">
+							<div class="imgOD" id="image-list">
+								<img src="@orders.Product.ImageUrl" style="width: 100px;" />
+							</div>
+							<div class="imgOD" id="orderDetails">
+								<h6>@orders.Product.Name</h6>
+								<p>Quantity: @orders.Quantity</p>
+							</div>
+						</div>
+					}
+					<div class="button-container">
+						<button class="btn btn-primary" type="submit">Place Order</button>
+						<button class="btn btn-danger" type="submit">Delete All</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>

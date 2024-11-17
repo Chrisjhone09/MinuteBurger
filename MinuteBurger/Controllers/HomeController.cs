@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using MinuteBurger.Data;
+using MinuteBurger.Entities;
 using MinuteBurger.Models;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,12 +23,39 @@ namespace MinuteBurger.Controllers
 			_context = context;
 			_webHostEnvironment = webHostEnvironment;
 		}
+		[HttpPost]
+		public IActionResult Index(int[] selectedIds)
+		{
+			int[] id = selectedIds;
+			try
+			{
+				foreach (var ids in id)
+				{
+					var item = _context.OrderItem.Find(ids);
+					_context.OrderItem.Remove(item);
+					_context.SaveChanges();
+				}
+			}
+			catch(Exception e)
+			{
+				
+			}
+			return View();
+		}
+
 		[HttpGet]
 		public IActionResult Index()
 		{
 			var entities = _context.Product.ToList();
 
-			return View(entities);
+
+			var ProductsAndOrders = new ProductOrderList
+			{
+				Products = entities,
+				Orders = _context.OrderItem.ToList()
+			};
+
+			return View(ProductsAndOrders);
 		}
 		public IActionResult Privacy()
 		{
@@ -103,34 +131,9 @@ namespace MinuteBurger.Controllers
 			_context.OrderItem.Add(orderItem);
 			_context.SaveChanges();
 
-			return RedirectToAction("PlaceOrder", new { id = orderItem.OrderItemId });
+			return RedirectToAction("Index");
 		}
 
-		[HttpGet("Item/{id:int}/PlaceOrder")]
-		public IActionResult PlaceOrder(int id)
-		{
-			var orderItem = _context.OrderItem.Find(id);
-			if (orderItem == null)
-			{
-				return NotFound("Order item not found.");
-			}
-
-			var order = new Order
-			{
-				TotalAmountToPay = orderItem.TotalAmount,
-				OrderItems = new List<OrderItem> { orderItem },
-				OrderStatus = OrderStatus.Preparing
-			};
-
-			return View(order);
-		}
-		[HttpGet]
-		public IActionResult ShoppingCart()
-		{
-			var orders = _context.OrderItem.ToList();
-
-			return View(orders);
-		}
 
 		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Error()

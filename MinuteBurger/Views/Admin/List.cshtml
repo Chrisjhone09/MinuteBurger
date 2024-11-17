@@ -1,4 +1,4 @@
-﻿@model MinuteBurger.Models.SortAndList
+﻿@model MinuteBurger.Entities.SortAndList
 @{
 
 }
@@ -27,18 +27,29 @@
 		<tbody>
 			@foreach (var obj in Model.Products)
 			{
+
 				<tr>
-					<td>@obj.ProductId</td>
-					<td>@obj.Name</td>
-					<td>@obj.Description</td>
-					<td>@string.Format("{0:C}", obj.Price)</td>
-					<td>@obj.StockQuantity</td>
-					<td><img src="@obj.ImageUrl" alt="Uploaded Image" style="max-width: 300px;" /></td>
-					<td>
-						<a class="btn btn-primary" asp-action="EditView" asp-route-id="@obj.ProductId">View Details</a>
-					</td>
+					@if (obj != null)
+					{
+						<td>@obj.ProductId</td>
+						<td>@obj.Name</td>
+						<td>@obj.Description</td>
+						<td>@string.Format("{0:C}", obj.Price)</td>
+						<td>@obj.StockQuantity</td>
+						<td><img src="@obj.ImageUrl" alt="Uploaded Image" style="max-width: 300px;" /></td>
+						<td>
+							<a class="btn btn-primary" asp-action="Edit" asp-route-id="@obj.ProductId">Edit</a>
+							<a class="btn btn-danger" asp-action="Delete" asp-route-id="@obj.ProductId">Delete</a>
+						</td>
+					}
+					else
+					{
+						<td colspan="7"><i>Empty List</i></td>
+					}
 				</tr>
 			}
+
+
 		</tbody>
 	</table>
 </div>
