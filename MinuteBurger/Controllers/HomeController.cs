@@ -36,11 +36,16 @@ namespace MinuteBurger.Controllers
 					_context.SaveChanges();
 				}
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
-				
+
 			}
-			return View();
+			var productOrderList = new ProductOrderList
+			{
+				Orders = _context.OrderItem.ToList(),
+				Products = _context.Product.ToList()
+			};
+			return View(productOrderList);
 		}
 
 		[HttpGet]
@@ -64,6 +69,7 @@ namespace MinuteBurger.Controllers
 		[HttpGet]
 		public IActionResult Item(int id)
 		{
+
 			var selectedProduct = _context.Product.Find(id);
 			if (selectedProduct == null)
 			{
@@ -79,7 +85,7 @@ namespace MinuteBurger.Controllers
 		[HttpGet]
 		public IActionResult BigTime()
 		{
-			var item = _context.Product.Where(p=> p.Category == "BigTime").ToList();
+			var item = _context.Product.Where(p => p.Category == "BigTime").ToList();
 			return View(item);
 		}
 		[HttpGet]
@@ -112,23 +118,43 @@ namespace MinuteBurger.Controllers
 				totalAmount -= discount;
 			}
 
-			OrderItem orderItem = new OrderItem
+			if (_context.OrderItem.Any(o => o.Product.Name == model.Product.Name))
 			{
-				OrderedAt = DateTime.Now,
-				TotalAmount = totalAmount,
-				Product = selectedProduct,
-				Quantity = model.Quantity,
-				ProductId = selectedProduct.ProductId
-			};
+				var itemId = _context.OrderItem.FirstOrDefault(o => o.Product.Name == model.Product.Name);
 
-			var order = new Order
+				var existingOrderItem = _context.OrderItem.Find(itemId.OrderItemId);
+				existingOrderItem.TotalAmount += model.TotalAmount;
+				existingOrderItem.Quantity += model.Quantity;
+				existingOrderItem.OrderedAt = DateTime.Now;
+				existingOrderItem.OrderItemId = existingOrderItem.OrderItemId;
+
+				var order = new Order
+				{
+					OrderItems = new List<OrderItem> { existingOrderItem },
+					TotalAmountToPay = existingOrderItem.TotalAmount
+				};
+				_context.Order.Add(order);
+				_context.OrderItem.Update(existingOrderItem);
+			}
+			else
 			{
-				OrderItems = new List<OrderItem> { orderItem },
-				TotalAmountToPay = orderItem.TotalAmount
-			};
+				OrderItem orderItem = new OrderItem
+				{
+					OrderedAt = DateTime.Now,
+					TotalAmount = totalAmount,
+					Product = selectedProduct,
+					Quantity = model.Quantity,
+					ProductId = selectedProduct.ProductId
+				};
+				var order = new Order
+				{
+					OrderItems = new List<OrderItem> { orderItem },
+					TotalAmountToPay = orderItem.TotalAmount
+				};
+				_context.Order.Add(order);
+				_context.OrderItem.Add(orderItem);
+			}
 
-			_context.Order.Add(order);
-			_context.OrderItem.Add(orderItem);
 			_context.SaveChanges();
 
 			return RedirectToAction("Index");

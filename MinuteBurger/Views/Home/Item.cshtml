@@ -28,20 +28,17 @@
                 <h4>₱@Model.Product.Price</h4>
                 <p class="card-text">@Model.Product.Description</p>
             </div>
-
-            <!-- Hidden fields for necessary Product information -->
+            <input type="hidden" asp-for="Product.Name" />
             <input type="hidden" asp-for="Product.ProductId" />
             <input type="hidden" asp-for="Product.Price" />
             <input type="hidden" asp-for="Product.Description" />
             <input type="hidden" asp-for="Product.ImageUrl" />
-
-            <!-- Voucher Input -->
             <div class="form-group">
                 <label for="VoucherInput">Voucher Code:</label>
                 <input asp-for="VoucherInput" type="text" class="form-control" placeholder="Enter voucher code (if any)" />
             </div>
 
-            <!-- Quantity Input -->
+
             <div class="form-group">
                 <label for="Quantity">Quantity:</label>
                 <input asp-for="Quantity" type="number" class="form-control" min="1" value="1" />

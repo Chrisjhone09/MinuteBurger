@@ -1,4 +1,7 @@
 ﻿@model MinuteBurger.Entities.ProductOrderList
+@{
+	bool isNull = true;
+}
 <style>
 	.filters {
 		display: flex;
@@ -16,7 +19,9 @@
 		height: 50px;
 		width: 150px;
 	}
-
+	#listContainer {
+		padding: 15px;
+	}
 	.card-container {
 		display: flex;
 		flex-direction: row;
@@ -56,12 +61,30 @@
 	}
 
 	.order-item {
-		border: solid;
-		margin: 10px;
-		display: block;
-		height: 120px;
+		display: flex;
+		align-items: center; /* Vertically align items within the container */
+		justify-content: space-between; /* Create space between items */
+		border: thin solid black;
+		height: 110px;
+		position: relative;
+		margin-bottom: 7px;
 	}
 
+	#image-list {
+		flex: 0 0 auto; /* Ensure the image doesn't shrink or grow */
+		margin-right: 10px; /* Space between the image and details */
+	}
+
+	#orderDetails {
+		flex: 1;
+		justify-content: center;
+	}
+
+	#form-check {
+		position: absolute;
+		top: 10px;
+		right: 10px; /* Align checkbox to the upper-right corner */
+	}
 	#orderTitle {
 		display: flex;
 		justify-content: center;
@@ -87,17 +110,19 @@
 		display: block;
 	}
 
-	#totalAmount {
-		position: relative;
-		right: 0;
-		text-align: right;
-		font-size: large;
-	}
 	.button-container {
 		display: flex;
 		justify-content: center;
 		gap: 20px;
+		margin-top: 15px;
 	}
+
+	.card-body {
+		position: relative;
+	}
+
+
+
 </style>
 <div class=container>
 	<div class="child-container" id="buttonsProducts">
@@ -157,15 +182,29 @@
 								<img src="@orders.Product.ImageUrl" style="width: 100px;" />
 							</div>
 							<div class="imgOD" id="orderDetails">
-								<h6>@orders.Product.Name</h6>
-								<p>Quantity: @orders.Quantity</p>
+								<p style="font-size:large;" id="text-details">@orders.Product.Name</p>
+								<p><b>Price:</b> @orders.Product.Price</p>
+								<p id="text-details"><b>Quantity:</b> @orders.Quantity</p>
+							</div>
+							<div class="imgOD" id="form-check">
+								<input class="form-check-input" name="selectedIds" type="checkbox" value="@orders.OrderItemId" id="flexCheckChecked" checked>
 							</div>
 						</div>
+
+							 isNull = orders == null ? true : false;
 					}
-					<div class="button-container">
-						<button class="btn btn-primary" type="submit">Place Order</button>
-						<button class="btn btn-danger" type="submit">Delete All</button>
-					</div>
+					@if (!isNull)
+					{
+						<div class="button-container">
+							<button class="btn btn-danger" type="submit">Delete</button>
+							<a class="btn btn-primary" type="submit">Place Order</a>
+						</div>
+					} else
+					{
+						<div class="button-container">
+							<p><i>No Orders at the moment</i></p>
+						</div>
+					}
 				</form>
 			</div>
 		</div>
